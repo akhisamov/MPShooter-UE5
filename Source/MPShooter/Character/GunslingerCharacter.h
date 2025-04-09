@@ -24,6 +24,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void MoveForward(float Value);
+	void Strafe(float Value);
+	void LookUp(float Value);
+	void Turn(float Value);
+
 private:
 	UPROPERTY(VisibleAnywhere, Category=Camera)
 	USpringArmComponent* CameraBoom;
