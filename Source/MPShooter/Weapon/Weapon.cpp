@@ -50,6 +50,14 @@ void AWeapon::BeginPlay()
 	}
 }
 
+void AWeapon::ShowPickupWidget(bool bShow)
+{
+	if (PickupWidget)
+	{
+		PickupWidget->SetVisibility(bShow);
+	}
+}
+
 void AWeapon::OnSphereBeginOverlap(
 	UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor,
@@ -63,7 +71,7 @@ void AWeapon::OnSphereBeginOverlap(
 		auto* GunslingerCharacter = Cast<AGunslingerCharacter>(OtherActor);
 		if (GunslingerCharacter)
 		{
-			PickupWidget->SetVisibility(true);
+			GunslingerCharacter->SetOverlappingWeapon(this);
 		}
 	}
 }
@@ -79,7 +87,7 @@ void AWeapon::OnSphereEndOverlap(
 		auto* GunslingerCharacter = Cast<AGunslingerCharacter>(OtherActor);
 		if (GunslingerCharacter)
 		{
-			PickupWidget->SetVisibility(false);
+			GunslingerCharacter->SetOverlappingWeapon(nullptr);
 		}
 	}
 }

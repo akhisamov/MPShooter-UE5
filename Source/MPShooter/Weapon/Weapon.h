@@ -26,6 +26,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	void ShowPickupWidget(bool bShow);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -55,7 +57,7 @@ private:
 	class USphereComponent* AreaSphere;
 
 	UPROPERTY(VisibleAnywhere)
-	EWeaponState WeaponState;
+	EWeaponState WeaponState = EWeaponState::Inital;
 
 	UPROPERTY(EditAnywhere)
 	class UWidgetComponent* PickupWidget;
