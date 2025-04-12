@@ -7,9 +7,6 @@
 
 #include "GunslingerCharacter.generated.h"
 
-class USpringArmComponent;
-class UCameraComponent;
-
 UCLASS()
 class MPSHOOTER_API AGunslingerCharacter : public ACharacter
 {
@@ -30,8 +27,10 @@ protected:
 	void Turn(float Value);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category=Camera)
-	USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere, Category = Camera)
-	UCameraComponent* FollowCamera;
+	class USpringArmComponent* CameraBoom;
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	class UCameraComponent* FollowCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD, meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* OverheadWidget;
 };
