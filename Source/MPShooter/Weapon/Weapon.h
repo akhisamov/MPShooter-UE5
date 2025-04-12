@@ -1,0 +1,41 @@
+// Copyright (c) 2025 Amil Khisamov
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Weapon.generated.h"
+
+UENUM(BlueprintType)
+enum class EWeaponState : uint8
+{
+	Inital UMETA(DisplayName = "Initial State"),
+	Equipped UMETA(DisplayName = "Equipped"),
+	Dropped UMETA(DisplayName = "Dropped"),
+
+	MAX UMETA(DisplayName = "DefaultMAX")
+};
+
+UCLASS()
+class MPSHOOTER_API AWeapon : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	AWeapon();
+
+	virtual void Tick(float DeltaTime) override;
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UStaticMeshComponent* WeaponMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	class USphereComponent* AreaSphere;
+
+	UPROPERTY(VisibleAnywhere)
+	EWeaponState WeaponState;
+};
