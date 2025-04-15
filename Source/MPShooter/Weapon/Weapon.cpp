@@ -1,8 +1,10 @@
 // Copyright (c) 2025 Amil Khisamov
 
 #include "Weapon.h"
-#include "Components/SphereComponent.h"
+
 #include "Components/WidgetComponent.h"
+#include "Components/SphereComponent.h"
+
 #include "MPShooter/Character/GunslingerCharacter.h"
 
 AWeapon::AWeapon()

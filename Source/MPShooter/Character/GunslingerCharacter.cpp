@@ -1,17 +1,18 @@
 // Copyright (c) 2025 Amil Khisamov
 
+#include "GunslingerCharacter.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "GunslingerCharacter.h"
-#include "Net/UnrealNetwork.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
+#include "Net/UnrealNetwork.h"
 
-#include "MPShooter/Components/CombatComponent.h"
 #include "MPShooter/Weapon/Weapon.h"
+#include "MPShooter/Components/CombatComponent.h"
 
 static void SwitchOverlappingWeapons(AWeapon* LastWeapon, AWeapon* NewWeapon)
 {
@@ -43,6 +44,9 @@ AGunslingerCharacter::AGunslingerCharacter()
 
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
+
+	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	Combat->SetIsReplicated(true);
 }
 
 void AGunslingerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -51,10 +55,19 @@ void AGunslingerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME_CONDITION(AGunslingerCharacter, OverlappingWeapon, COND_OwnerOnly);
 }
 
+void AGunslingerCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if (Combat)
+	{
+		Combat->Character = this;
+	}
+}
+
 void AGunslingerCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
 	AWeapon* LastWeapon = OverlappingWeapon;
-	OverlappingWeapon = Weapon;
+	OverlappingWeapon = Weapon && Weapon->GetOwner() ? nullptr : Weapon;
 	if (IsLocallyControlled())
 	{
 		SwitchOverlappingWeapons(LastWeapon, OverlappingWeapon);
@@ -95,14 +108,9 @@ void AGunslingerCharacter::Look(const FInputActionValue& Value)
 
 void AGunslingerCharacter::EquipWeapon()
 {
-	if (GEngine)
+	if (OverlappingWeapon && Combat && HasAuthority())
 	{
-		GEngine->AddOnScreenDebugMessage(
-			-1,
-			15.f,
-			FColor::Cyan,
-			TEXT("EquipWeapon")
-		);
+		Combat->EquipWeapon(OverlappingWeapon);
 	}
 }
 
