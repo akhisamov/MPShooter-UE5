@@ -4,6 +4,7 @@
 
 #include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 #include "MPShooter/Character/GunslingerCharacter.h"
 
@@ -34,6 +35,13 @@ void AWeapon::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AWeapon, WeaponState);
+}
+
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
@@ -58,6 +66,12 @@ void AWeapon::ShowPickupWidget(bool bShow)
 	{
 		PickupWidget->SetVisibility(bShow);
 	}
+}
+
+void AWeapon::SetWeaponState(EWeaponState State)
+{
+	WeaponState = State;
+	UpdateWeaponState();
 }
 
 void AWeapon::OnSphereBeginOverlap(
@@ -91,5 +105,23 @@ void AWeapon::OnSphereEndOverlap(
 		{
 			GunslingerCharacter->SetOverlappingWeapon(nullptr);
 		}
+	}
+}
+
+void AWeapon::OnRep_WeaponState()
+{
+	UpdateWeaponState();
+}
+
+void AWeapon::UpdateWeaponState()
+{
+	switch (WeaponState)
+	{
+	case EWeaponState::Equipped:
+	{
+		ShowPickupWidget(false);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	}
 	}
 }

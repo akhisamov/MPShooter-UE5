@@ -108,9 +108,16 @@ void AGunslingerCharacter::Look(const FInputActionValue& Value)
 
 void AGunslingerCharacter::EquipWeapon()
 {
-	if (OverlappingWeapon && Combat && HasAuthority())
+	if (OverlappingWeapon && Combat)
 	{
-		Combat->EquipWeapon(OverlappingWeapon);
+		if (HasAuthority())
+		{
+			Combat->EquipWeapon(OverlappingWeapon);
+		}
+		else
+		{
+			ServerEquipButtonPressed();
+		}
 	}
 }
 
@@ -145,4 +152,12 @@ void AGunslingerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void AGunslingerCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {
 	SwitchOverlappingWeapons(LastWeapon, OverlappingWeapon);
+}
+
+void AGunslingerCharacter::ServerEquipButtonPressed_Implementation()
+{
+	if (OverlappingWeapon && Combat)
+	{
+		Combat->EquipWeapon(OverlappingWeapon);
+	}
 }

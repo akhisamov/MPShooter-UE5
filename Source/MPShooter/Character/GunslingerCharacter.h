@@ -66,4 +66,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* EquipAction;
+
+	UFUNCTION(Server, Reliable)
+	void ServerEquipButtonPressed();
 };
