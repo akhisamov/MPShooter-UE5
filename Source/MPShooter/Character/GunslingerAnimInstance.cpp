@@ -31,4 +31,5 @@ void UGunslingerAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	bIsInAir = GunslingerCharacter->GetCharacterMovement()->IsFalling();
 	bIsAccelerating = GunslingerCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.0f;
+	bWeaponEquipped = GunslingerCharacter->IsWeaponEquipped();
 }

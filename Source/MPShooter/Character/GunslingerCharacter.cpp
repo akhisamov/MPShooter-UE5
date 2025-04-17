@@ -74,6 +74,11 @@ void AGunslingerCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 	}
 }
 
+bool AGunslingerCharacter::IsWeaponEquipped() const
+{
+	return Combat && Combat->EquippedWeapon;
+}
+
 void AGunslingerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
