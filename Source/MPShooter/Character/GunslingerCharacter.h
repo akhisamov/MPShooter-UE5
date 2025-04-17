@@ -33,6 +33,8 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void EquipWeapon();
+	void StartCrouching();
+	void StopCrouching();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -67,6 +69,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* EquipAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* CrouchAction;
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();

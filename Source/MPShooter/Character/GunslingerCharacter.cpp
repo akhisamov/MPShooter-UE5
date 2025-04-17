@@ -47,6 +47,8 @@ AGunslingerCharacter::AGunslingerCharacter()
 
 	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	Combat->SetIsReplicated(true);
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 void AGunslingerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -126,6 +128,16 @@ void AGunslingerCharacter::EquipWeapon()
 	}
 }
 
+void AGunslingerCharacter::StartCrouching()
+{
+	Crouch();
+}
+
+void AGunslingerCharacter::StopCrouching()
+{
+	UnCrouch();
+}
+
 void AGunslingerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -151,6 +163,8 @@ void AGunslingerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AGunslingerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AGunslingerCharacter::Look);
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &AGunslingerCharacter::EquipWeapon);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AGunslingerCharacter::StartCrouching);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AGunslingerCharacter::StopCrouching);
 	}
 }
 
