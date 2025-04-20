@@ -81,6 +81,11 @@ bool AGunslingerCharacter::IsWeaponEquipped() const
 	return Combat && Combat->EquippedWeapon;
 }
 
+bool AGunslingerCharacter::IsAiming() const
+{
+	return Combat && Combat->bIsAiming;
+}
+
 void AGunslingerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -138,6 +143,22 @@ void AGunslingerCharacter::StopCrouching()
 	UnCrouch();
 }
 
+void AGunslingerCharacter::StartAiming()
+{
+	if (Combat)
+	{
+		Combat->SetAiming(true);
+	}
+}
+
+void AGunslingerCharacter::StopAiming()
+{
+	if (Combat)
+	{
+		Combat->SetAiming(false);
+	}
+}
+
 void AGunslingerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -165,6 +186,8 @@ void AGunslingerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &AGunslingerCharacter::EquipWeapon);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AGunslingerCharacter::StartCrouching);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AGunslingerCharacter::StopCrouching);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AGunslingerCharacter::StartAiming);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AGunslingerCharacter::StopAiming);
 	}
 }
 

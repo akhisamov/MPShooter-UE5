@@ -26,6 +26,7 @@ public:
 
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	bool IsWeaponEquipped() const;
+	bool IsAiming() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -35,6 +36,8 @@ protected:
 	void EquipWeapon();
 	void StartCrouching();
 	void StopCrouching();
+	void StartAiming();
+	void StopAiming();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -72,6 +75,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* CrouchAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* AimAction;
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();

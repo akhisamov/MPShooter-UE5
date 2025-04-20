@@ -25,10 +25,17 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	void SetAiming(bool bValue);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetAiming(bool bValue);
 
 private:
 	AGunslingerCharacter* Character;
 
 	UPROPERTY(Replicated)
 	AWeapon* EquippedWeapon;
+
+	UPROPERTY(Replicated)
+	bool bIsAiming = false;
 };
