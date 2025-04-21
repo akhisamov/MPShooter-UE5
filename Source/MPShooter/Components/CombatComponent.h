@@ -30,10 +30,13 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerSetAiming(bool bValue);
 
+	UFUNCTION()
+	void OnRep_EquippedWeapon();
+
 private:
 	AGunslingerCharacter* Character;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	AWeapon* EquippedWeapon;
 
 	UPROPERTY(Replicated)

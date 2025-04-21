@@ -5,6 +5,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Components/SphereComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "MPShooter/Character/GunslingerCharacter.h"
 #include "MPShooter/Weapon/Weapon.h"
@@ -24,6 +25,15 @@ void UCombatComponent::SetAiming(bool bValue)
 {
 	bIsAiming = bValue;
 	ServerSetAiming(bValue);
+}
+
+void UCombatComponent::OnRep_EquippedWeapon()
+{
+	if (EquippedWeapon && Character)
+	{
+		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+		Character->bUseControllerRotationYaw = true;
+	}
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool bValue)
@@ -60,4 +70,6 @@ void UCombatComponent::EquipWeapon(AWeapon* Weapon)
 		HandSocket->AttachActor(Weapon, Character->GetMesh());
 	}
 	EquippedWeapon->SetOwner(Character);
+	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+	Character->bUseControllerRotationYaw = true;
 }
