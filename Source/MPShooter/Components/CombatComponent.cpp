@@ -10,37 +10,48 @@
 #include "MPShooter/Character/GunslingerCharacter.h"
 #include "MPShooter/Weapon/Weapon.h"
 
+#define TRY_GET_CHARACTER_MOVEMENT Character; auto* CharacterMovement = Character->GetCharacterMovement()
+#define GET_WALK_SPEED bIsAiming ? AimWalkSpeed : BaseWalkSpeed
+#define SET_AIMING(bValue) bIsAiming = bValue; if (TRY_GET_CHARACTER_MOVEMENT) CharacterMovement->MaxWalkSpeed = GET_WALK_SPEED
+
 UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+
+	BaseWalkSpeed = 600.0f;
+	AimWalkSpeed = 400.0f;
 }
 
 
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (TRY_GET_CHARACTER_MOVEMENT)
+	{
+		CharacterMovement->MaxWalkSpeed = BaseWalkSpeed;
+	}
 }
 
 void UCombatComponent::SetAiming(bool bValue)
 {
-	bIsAiming = bValue;
+	SET_AIMING(bValue);
 	ServerSetAiming(bValue);
-}
-
-void UCombatComponent::OnRep_EquippedWeapon()
-{
-	if (EquippedWeapon && Character)
-	{
-		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-		Character->bUseControllerRotationYaw = true;
-	}
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool bValue)
 {
-	bIsAiming = bValue;
+	SET_AIMING(bValue);
 }
 
+void UCombatComponent::OnRep_EquippedWeapon()
+{
+	if (TRY_GET_CHARACTER_MOVEMENT)
+	{
+		CharacterMovement->bOrientRotationToMovement = false;
+		Character->bUseControllerRotationYaw = true;
+	}
+}
 
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
