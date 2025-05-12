@@ -48,4 +48,7 @@ void UGunslingerAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	const float Target = Delta.Yaw / DeltaTime;
 	const float Interp = FMath::FInterpTo(Lean, Target, DeltaTime, 6.f);
 	Lean = FMath::Clamp(Interp, -90.f, 90.f);
+
+	AOYaw = GunslingerCharacter->GetAimOffsetYaw();
+	AOPitch = GunslingerCharacter->GetAimOffsetPitch();
 }

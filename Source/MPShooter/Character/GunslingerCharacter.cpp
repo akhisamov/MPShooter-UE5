@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 #include "MPShooter/Weapon/Weapon.h"
@@ -125,6 +126,8 @@ void AGunslingerCharacter::EquipWeapon()
 {
 	if (OverlappingWeapon && Combat)
 	{
+		StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
+		AOYaw = 0.0f;
 		if (HasAuthority())
 		{
 			Combat->EquipWeapon(OverlappingWeapon);
@@ -162,9 +165,35 @@ void AGunslingerCharacter::StopAiming()
 	}
 }
 
+void AGunslingerCharacter::AimOffset(float DeltaTime)
+{
+	if (Combat && !Combat->EquippedWeapon) return;
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.0f;
+	const float Speed = Velocity.Size();
+	const bool bIsInAir = GetCharacterMovement()->IsFalling();
+
+	if (Speed == 0.0f && !bIsInAir)
+	{
+		FRotator CurrentAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
+		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
+		AOYaw = DeltaAimRotation.Yaw;
+		bUseControllerRotationYaw = false;
+	}
+	if (Speed > 0.0f || bIsInAir)
+	{
+		StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
+		AOYaw = 0.0f;
+		bUseControllerRotationYaw = true;
+	}
+
+	AOPitch = GetBaseAimRotation().Pitch;
+}
+
 void AGunslingerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	AimOffset(DeltaTime);
 }
 
 void AGunslingerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

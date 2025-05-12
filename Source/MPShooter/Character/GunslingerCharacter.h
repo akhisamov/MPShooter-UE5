@@ -28,6 +28,9 @@ public:
 	bool IsWeaponEquipped() const;
 	bool IsAiming() const;
 
+	FORCEINLINE float GetAimOffsetYaw() const { return AOYaw; }
+	FORCEINLINE float GetAimOffsetPitch() const { return AOPitch; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -38,6 +41,7 @@ protected:
 	void StopCrouching();
 	void StartAiming();
 	void StopAiming();
+	void AimOffset(float DeltaTime);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -81,4 +85,8 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();
+
+	float AOYaw;
+	float AOPitch;
+	FRotator StartingAimRotation;
 };
