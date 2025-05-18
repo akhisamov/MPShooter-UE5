@@ -41,8 +41,12 @@ private:
 	float AOYaw;
 	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float AOPitch;
+	UPROPERTY(BlueprintReadOnly, Category = Sockets, meta = (AllowPrivateAccess = "true"))
+	FTransform LeftHandTransform;
 
 	FRotator CharacterRotationLastFrame;
 	FRotator CharacterRotation;
 	FRotator DeltaRotation;
+
+	class AWeapon* EquippedWeapon;
 };

@@ -90,6 +90,11 @@ bool AGunslingerCharacter::IsAiming() const
 	return Combat && Combat->bIsAiming;
 }
 
+AWeapon* AGunslingerCharacter::GetEquippedWeapon() const
+{
+	return Combat ? Combat->EquippedWeapon : nullptr;
+}
+
 void AGunslingerCharacter::BeginPlay()
 {
 	Super::BeginPlay();

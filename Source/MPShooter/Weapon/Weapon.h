@@ -31,6 +31,8 @@ public:
 
 	void SetWeaponState(EWeaponState State);
 
+	FORCEINLINE UStaticMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -30,6 +30,7 @@ public:
 
 	FORCEINLINE float GetAimOffsetYaw() const { return AOYaw; }
 	FORCEINLINE float GetAimOffsetPitch() const { return AOPitch; }
+	AWeapon* GetEquippedWeapon() const;
 
 protected:
 	virtual void BeginPlay() override;

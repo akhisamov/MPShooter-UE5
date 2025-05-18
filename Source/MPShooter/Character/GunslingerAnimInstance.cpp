@@ -5,6 +5,7 @@
 #include "GunslingerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MPShooter/Weapon/Weapon.h"
 
 void UGunslingerAnimInstance::NativeInitializeAnimation()
 {
@@ -35,6 +36,7 @@ void UGunslingerAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	bWeaponEquipped = GunslingerCharacter->IsWeaponEquipped();
 	bIsCrouched = GunslingerCharacter->bIsCrouched;
 	bIsAiming = GunslingerCharacter->IsAiming();
+	EquippedWeapon = GunslingerCharacter->GetEquippedWeapon();
 
 	const FRotator AimRotation = GunslingerCharacter->GetBaseAimRotation();
 	const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(GunslingerCharacter->GetVelocity());
@@ -51,4 +53,20 @@ void UGunslingerAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	AOYaw = GunslingerCharacter->GetAimOffsetYaw();
 	AOPitch = GunslingerCharacter->GetAimOffsetPitch();
+
+	if (bWeaponEquipped && EquippedWeapon && EquippedWeapon->GetWeaponMesh() && GunslingerCharacter->GetMesh())
+	{
+		LeftHandTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform("LeftHandSocket");
+		FVector OutPosition;
+		FRotator OutRotation;
+		GunslingerCharacter->GetMesh()->TransformToBoneSpace(
+			"hand_r",
+			LeftHandTransform.GetLocation(),
+			LeftHandTransform.GetRotation().Rotator(),
+			OutPosition,
+			OutRotation
+		);
+		LeftHandTransform.SetLocation(OutPosition);
+		LeftHandTransform.SetRotation(FQuat(OutRotation));
+	}
 }
