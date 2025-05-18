@@ -188,6 +188,13 @@ void AGunslingerCharacter::AimOffset(float DeltaTime)
 	}
 
 	AOPitch = GetBaseAimRotation().Pitch;
+	if (AOPitch > 90.0f && !IsLocallyControlled())
+	{
+		// map pitch from [270, 360) to [-90, 0)
+		FVector2D InputRange(270.0f, 360.0f);
+		FVector2D OutputRange(-90.0f, 0.0f);
+		AOPitch = FMath::GetMappedRangeValueClamped(InputRange, OutputRange, AOPitch);
+	}
 }
 
 void AGunslingerCharacter::Tick(float DeltaTime)
