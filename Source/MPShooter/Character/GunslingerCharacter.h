@@ -90,6 +90,7 @@ private:
 	void ServerEquipButtonPressed();
 
 	float AOYaw;
+	float InterpAOYaw;
 	float AOPitch;
 	FRotator StartingAimRotation;
 

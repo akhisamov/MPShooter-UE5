@@ -135,6 +135,7 @@ void AGunslingerCharacter::EquipWeapon()
 	{
 		StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
 		AOYaw = 0.0f;
+		bUseControllerRotationYaw = true;
 		if (HasAuthority())
 		{
 			Combat->EquipWeapon(OverlappingWeapon);
@@ -185,14 +186,16 @@ void AGunslingerCharacter::AimOffset(float DeltaTime)
 		FRotator CurrentAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
 		AOYaw = DeltaAimRotation.Yaw;
-		bUseControllerRotationYaw = false;
+		if (TurningInPlace == ETurningInPlace::NotTurning)
+		{
+			InterpAOYaw = AOYaw;
+		}
 		TurnInPlace(DeltaTime);
 	}
 	if (Speed > 0.0f || bIsInAir)
 	{
 		StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
 		AOYaw = 0.0f;
-		bUseControllerRotationYaw = true;
 		TurningInPlace = ETurningInPlace::NotTurning;
 	}
 
@@ -215,6 +218,16 @@ void AGunslingerCharacter::TurnInPlace(float DeltaTime)
 	if (AOYaw > 90.0f)
 	{
 		TurningInPlace = ETurningInPlace::Right;
+	}
+	if (TurningInPlace != ETurningInPlace::NotTurning)
+	{
+		InterpAOYaw = FMath::FInterpTo(InterpAOYaw, 0.f, DeltaTime, 5.0f);
+		AOYaw = InterpAOYaw;
+		if (FMath::Abs(AOYaw) < 15.f)
+		{
+			TurningInPlace = ETurningInPlace::NotTurning;
+			StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
+		}
 	}
 }
 
