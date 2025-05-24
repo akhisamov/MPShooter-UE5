@@ -53,6 +53,8 @@ AGunslingerCharacter::AGunslingerCharacter()
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+	TurningInPlace = ETurningInPlace::NotTurning;
 }
 
 void AGunslingerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -184,12 +186,14 @@ void AGunslingerCharacter::AimOffset(float DeltaTime)
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
 		AOYaw = DeltaAimRotation.Yaw;
 		bUseControllerRotationYaw = false;
+		TurnInPlace(DeltaTime);
 	}
 	if (Speed > 0.0f || bIsInAir)
 	{
 		StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
 		AOYaw = 0.0f;
 		bUseControllerRotationYaw = true;
+		TurningInPlace = ETurningInPlace::NotTurning;
 	}
 
 	AOPitch = GetBaseAimRotation().Pitch;
@@ -199,6 +203,18 @@ void AGunslingerCharacter::AimOffset(float DeltaTime)
 		FVector2D InputRange(270.0f, 360.0f);
 		FVector2D OutputRange(-90.0f, 0.0f);
 		AOPitch = FMath::GetMappedRangeValueClamped(InputRange, OutputRange, AOPitch);
+	}
+}
+
+void AGunslingerCharacter::TurnInPlace(float DeltaTime)
+{
+	if (AOYaw < -90.0f)
+	{
+		TurningInPlace = ETurningInPlace::Left;
+	}
+	if (AOYaw > 90.0f)
+	{
+		TurningInPlace = ETurningInPlace::Right;
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MPShooter/Types/TurningInPlace.h"
 
 #include "GunslingerCharacter.generated.h"
 
@@ -31,6 +32,7 @@ public:
 	FORCEINLINE float GetAimOffsetYaw() const { return AOYaw; }
 	FORCEINLINE float GetAimOffsetPitch() const { return AOPitch; }
 	AWeapon* GetEquippedWeapon() const;
+	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -90,4 +92,7 @@ private:
 	float AOYaw;
 	float AOPitch;
 	FRotator StartingAimRotation;
+
+	ETurningInPlace TurningInPlace;
+	void TurnInPlace(float DeltaTime);
 };

@@ -37,6 +37,7 @@ void UGunslingerAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	bIsCrouched = GunslingerCharacter->bIsCrouched;
 	bIsAiming = GunslingerCharacter->IsAiming();
 	EquippedWeapon = GunslingerCharacter->GetEquippedWeapon();
+	TurningInPlace = GunslingerCharacter->GetTurningInPlace();
 
 	const FRotator AimRotation = GunslingerCharacter->GetBaseAimRotation();
 	const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(GunslingerCharacter->GetVelocity());

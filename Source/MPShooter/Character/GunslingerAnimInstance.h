@@ -2,8 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "CoreMinimal.h"
+#include "MPShooter/Types/TurningInPlace.h"
+
 #include "GunslingerAnimInstance.generated.h"
 
 /**
@@ -43,6 +45,8 @@ private:
 	float AOPitch;
 	UPROPERTY(BlueprintReadOnly, Category = Sockets, meta = (AllowPrivateAccess = "true"))
 	FTransform LeftHandTransform;
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	ETurningInPlace TurningInPlace;
 
 	FRotator CharacterRotationLastFrame;
 	FRotator CharacterRotation;
