@@ -6,5 +6,7 @@ DerivedDataCache/
 Intermediate/
 Releases/
 Saved/
+.cache/
 .vsconfig
 *.sln
+compile_commands.json
