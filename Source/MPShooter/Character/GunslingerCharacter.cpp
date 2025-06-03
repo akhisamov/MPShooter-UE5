@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Animation/AnimInstance.h"
 
 #include "MPShooter/Weapon/Weapon.h"
 #include "MPShooter/Components/CombatComponent.h"
@@ -73,6 +74,19 @@ void AGunslingerCharacter::PostInitializeComponents()
 	if (Combat)
 	{
 		Combat->Character = this;
+	}
+}
+
+void AGunslingerCharacter::PlayFireMontage(bool bAiming)
+{
+	if (Combat == nullptr || Combat->EquippedWeapon == nullptr) return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && FireWeaponMontage)
+	{
+		AnimInstance->Montage_Play(FireWeaponMontage);
+		FName SectionName = bAiming ? "RifleAim" : "RifleHip";
+		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
 
@@ -213,6 +227,22 @@ void AGunslingerCharacter::AimOffset(float DeltaTime)
 	}
 }
 
+void AGunslingerCharacter::StartFiring()
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(true);
+	}
+}
+
+void AGunslingerCharacter::StopFiring()
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
+}
+
 void AGunslingerCharacter::TurnInPlace(float DeltaTime)
 {
 	if (AOYaw < -90.0f)
@@ -265,6 +295,8 @@ void AGunslingerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AGunslingerCharacter::StopCrouching);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AGunslingerCharacter::StartAiming);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AGunslingerCharacter::StopAiming);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AGunslingerCharacter::StartFiring);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AGunslingerCharacter::StopFiring);
 	}
 }
 

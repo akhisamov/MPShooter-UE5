@@ -24,6 +24,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
+	void PlayFireMontage(bool bAiming);
 
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	bool IsWeaponEquipped() const;
@@ -45,6 +46,8 @@ protected:
 	void StartAiming();
 	void StopAiming();
 	void AimOffset(float DeltaTime);
+	void StartFiring();
+	void StopFiring();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -86,6 +89,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AimAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
+
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();
 
@@ -96,4 +102,7 @@ private:
 
 	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	class UAnimMontage* FireWeaponMontage;
 };

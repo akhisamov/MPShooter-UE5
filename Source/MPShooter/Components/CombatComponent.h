@@ -33,6 +33,8 @@ protected:
 	UFUNCTION()
 	void OnRep_EquippedWeapon();
 
+	void FireButtonPressed(bool bPressed);
+
 private:
 	AGunslingerCharacter* Character;
 
@@ -46,4 +48,6 @@ private:
 	float BaseWalkSpeed;
 	UPROPERTY(EditAnywhere)
 	float AimWalkSpeed;
+
+	bool bFireButtonPressed = false;
 };
