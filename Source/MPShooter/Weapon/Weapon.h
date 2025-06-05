@@ -29,6 +29,8 @@ public:
 
 	void ShowPickupWidget(bool bShow);
 
+	void Fire();
+
 	void SetWeaponState(EWeaponState State);
 
 	FORCEINLINE UStaticMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
@@ -71,4 +73,10 @@ private:
 	class UWidgetComponent* PickupWidget;
 
 	void UpdateWeaponState();
+
+	UPROPERTY(EditAnywhere)
+	class USceneComponent* Muzzle;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	class UNiagaraSystem* FireEffectMuzzle;
 };

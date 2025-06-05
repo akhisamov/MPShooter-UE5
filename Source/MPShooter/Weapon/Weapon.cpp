@@ -2,9 +2,11 @@
 
 #include "Weapon.h"
 
-#include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "MPShooter/Character/GunslingerCharacter.h"
 
@@ -28,6 +30,9 @@ AWeapon::AWeapon()
 
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
+
+	Muzzle = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle"));
+	Muzzle->SetupAttachment(RootComponent);
 }
 
 void AWeapon::Tick(float DeltaTime)
@@ -65,6 +70,22 @@ void AWeapon::ShowPickupWidget(bool bShow)
 	if (PickupWidget)
 	{
 		PickupWidget->SetVisibility(bShow);
+	}
+}
+
+void AWeapon::Fire()
+{
+	if (Muzzle && FireEffectMuzzle)
+	{
+		UNiagaraComponent* EffectComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			FireEffectMuzzle,
+			Muzzle,
+			NAME_None,
+			FVector::ZeroVector,
+			FRotator::ZeroRotator,
+			EAttachLocation::KeepRelativeOffset,
+			true
+		);
 	}
 }
 
