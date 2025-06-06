@@ -74,9 +74,6 @@ private:
 
 	void UpdateWeaponState();
 
-	UPROPERTY(EditAnywhere)
-	class USceneComponent* Muzzle;
-
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	class UNiagaraSystem* FireEffectMuzzle;
 };

@@ -30,9 +30,6 @@ AWeapon::AWeapon()
 
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
-
-	Muzzle = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle"));
-	Muzzle->SetupAttachment(RootComponent);
 }
 
 void AWeapon::Tick(float DeltaTime)
@@ -75,15 +72,16 @@ void AWeapon::ShowPickupWidget(bool bShow)
 
 void AWeapon::Fire()
 {
-	if (Muzzle && FireEffectMuzzle)
+	if (WeaponMesh && FireEffectMuzzle)
 	{
+		const FTransform MuzzleTransform = WeaponMesh->GetSocketTransform("Muzzle");
 		UNiagaraComponent* EffectComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
 			FireEffectMuzzle,
-			Muzzle,
+			WeaponMesh,
 			NAME_None,
-			FVector::ZeroVector,
-			FRotator::ZeroRotator,
-			EAttachLocation::KeepRelativeOffset,
+			MuzzleTransform.GetLocation(),
+			FRotator(MuzzleTransform.GetRotation()),
+			EAttachLocation::KeepWorldPosition,
 			true
 		);
 	}
