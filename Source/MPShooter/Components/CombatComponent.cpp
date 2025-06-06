@@ -63,6 +63,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	FHitResult HitResult;
 	TraceUnderCrosshairs(HitResult);
+	HitTarget = HitResult.ImpactPoint;
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -113,7 +114,7 @@ void UCombatComponent::MulticastFire_Implementation()
 	if (Character && EquippedWeapon)
 	{
 		Character->PlayFireMontage(bIsAiming);
-		EquippedWeapon->Fire();
+		EquippedWeapon->Fire(HitTarget);
 	}
 }
 

@@ -29,7 +29,7 @@ public:
 
 	void ShowPickupWidget(bool bShow);
 
-	void Fire();
+	virtual void Fire(const FVector& HitTarget);
 
 	void SetWeaponState(EWeaponState State);
 
