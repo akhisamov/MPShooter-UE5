@@ -25,4 +25,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* TracerSystem;
+
+	class UNiagaraComponent* TracerComponent;
 };

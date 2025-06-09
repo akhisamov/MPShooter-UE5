@@ -7,6 +7,9 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
 {
 	Super::Fire(HitTarget);
 
+	// Server-only projectile spawn
+	if (!HasAuthority()) return;
+
 	auto* InstigatorPawn = Cast<APawn>(GetOwner());
 	const FTransform MuzzleTransform = GetWeaponMesh()->GetSocketTransform("Muzzle");
 	const FVector ToTarget = HitTarget - MuzzleTransform.GetLocation();
