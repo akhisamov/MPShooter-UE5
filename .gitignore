@@ -7,6 +7,7 @@ Intermediate/
 Releases/
 Saved/
 .cache/
+*.xcworkspace/
 .vsconfig
 *.sln
 compile_commands.json
