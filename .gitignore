@@ -1,7 +1,7 @@
 .vs/
 Binaries/
 Build/
-Content/*
+Content/Assets/
 DerivedDataCache/
 Intermediate/
 Releases/
