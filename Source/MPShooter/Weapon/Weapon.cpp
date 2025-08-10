@@ -4,9 +4,11 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Sound/SoundCue.h"
 
 #include "MPShooter/Character/GunslingerCharacter.h"
 
@@ -72,9 +74,14 @@ void AWeapon::ShowPickupWidget(bool bShow)
 
 void AWeapon::Fire(const FVector& HitTarget)
 {
-	if (WeaponMesh && FireEffectMuzzle)
+	if (!WeaponMesh)
 	{
-		const FTransform MuzzleTransform = WeaponMesh->GetSocketTransform("Muzzle");
+		return;
+	}
+
+	const FTransform MuzzleTransform = WeaponMesh->GetSocketTransform("Muzzle");
+	if (FireEffectMuzzle)
+	{
 		UNiagaraComponent* EffectComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
 			FireEffectMuzzle,
 			WeaponMesh,
@@ -84,6 +91,12 @@ void AWeapon::Fire(const FVector& HitTarget)
 			EAttachLocation::KeepWorldPosition,
 			true
 		);
+	}
+
+	UWorld* World = GetWorld();
+	if (GunshotSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(World, GunshotSound, MuzzleTransform.GetLocation(), 1.0f, 1.0f, 0.1f);
 	}
 }
 

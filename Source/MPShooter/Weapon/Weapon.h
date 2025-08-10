@@ -76,4 +76,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	class UNiagaraSystem* FireEffectMuzzle;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue* GunshotSound;
 };
