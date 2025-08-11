@@ -10,6 +10,8 @@
 #include "DrawDebugHelpers.h"
 
 #include "MPShooter/Character/GunslingerCharacter.h"
+#include "MPShooter/HUD/GunslingerHUD.h"
+#include "MPShooter/PlayerController/GunslingerPlayerController.h"
 #include "MPShooter/Weapon/Weapon.h"
 
 #define TRY_GET_CHARACTER_MOVEMENT Character; auto* CharacterMovement = Character->GetCharacterMovement()
@@ -87,6 +89,11 @@ void UCombatComponent::EquipWeapon(AWeapon* Weapon)
 	EquippedWeapon->SetOwner(Character);
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 	Character->bUseControllerRotationYaw = true;
+
+	if (HUD)
+	{
+		HUD->SetCrosshairsHUDPackage(&EquippedWeapon->GetCrosshairsHUD());
+	}
 }
 
 
@@ -146,5 +153,14 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			End,
 			ECollisionChannel::ECC_Visibility
 		);
+	}
+}
+
+void UCombatComponent::SetController(AController* NewController)
+{
+	if (NewController->GetCharacter() == Character)
+	{
+		Controller = Cast<AGunslingerPlayerController>(NewController);
+		HUD = Controller ? Cast<AGunslingerHUD>(Controller->GetHUD()) : nullptr;
 	}
 }

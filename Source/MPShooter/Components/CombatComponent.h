@@ -44,7 +44,12 @@ protected:
 	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 
 private:
+	void SetController(AController* NewController);
+
+private:
 	AGunslingerCharacter* Character;
+	class AGunslingerPlayerController* Controller = nullptr;
+	class AGunslingerHUD* HUD = nullptr;
 
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	AWeapon* EquippedWeapon;

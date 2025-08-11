@@ -14,8 +14,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Animation/AnimInstance.h"
 
-#include "MPShooter/Weapon/Weapon.h"
 #include "MPShooter/Components/CombatComponent.h"
+#include "MPShooter/Weapon/Weapon.h"
 
 static void SwitchOverlappingWeapons(AWeapon* LastWeapon, AWeapon* NewWeapon)
 {
@@ -74,6 +74,15 @@ void AGunslingerCharacter::PostInitializeComponents()
 	if (Combat)
 	{
 		Combat->Character = this;
+	}
+}
+
+void AGunslingerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (Combat)
+	{
+		Combat->SetController(NewController);
 	}
 }
 

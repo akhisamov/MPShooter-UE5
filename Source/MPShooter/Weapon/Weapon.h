@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "MPShooter/HUD/CrosshairsHUDPackage.h"
 #include "Weapon.generated.h"
 
 UENUM(BlueprintType)
@@ -34,6 +35,8 @@ public:
 	void SetWeaponState(EWeaponState State);
 
 	FORCEINLINE UStaticMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+
+	FORCEINLINE const FCrosshairsHUDPackage& GetCrosshairsHUD() const { return CrosshairsHUD; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -79,4 +82,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class USoundCue* GunshotSound;
+
+	UPROPERTY(EditAnywhere)
+	FCrosshairsHUDPackage CrosshairsHUD;
 };
