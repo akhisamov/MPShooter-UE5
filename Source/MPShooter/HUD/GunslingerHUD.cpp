@@ -24,9 +24,9 @@ void AGunslingerHUD::DrawHUD()
 	}
 }
 
-void AGunslingerHUD::SetCrosshairSpreadDelta(float Delta)
+void AGunslingerHUD::UpdateCrosshairSpread(float SpreadDelta)
 {
-	CrosshairSpread = CrosshairSpreadMax * Delta;
+	CrosshairSpread = CrosshairSpreadMax * SpreadDelta;
 }
 
 void AGunslingerHUD::DrawCrosshairsTexture(UTexture2D* Texture, const FVector2D& ViewportCenter, const FVector2D& Spread)

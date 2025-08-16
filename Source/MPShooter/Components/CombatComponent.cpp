@@ -84,7 +84,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 			CrosshairsInAirSpreadFactor = FMath::FInterpTo(CrosshairsInAirSpreadFactor, 0.0f, DeltaTime, 30.f);
 		}
 
-		HUD->SetCrosshairSpreadDelta(VelocityFactor + CrosshairsInAirSpreadFactor);
+		HUD->UpdateCrosshairSpread(VelocityFactor + CrosshairsInAirSpreadFactor);
 	}
 }
 

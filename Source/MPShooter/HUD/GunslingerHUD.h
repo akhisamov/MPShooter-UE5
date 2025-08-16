@@ -17,7 +17,7 @@ public:
 
 	FORCEINLINE void SetCrosshairsHUDPackage(const FCrosshairsHUDPackage* Package) { CrosshairsPackage = Package; }
 
-	void SetCrosshairSpreadDelta(float Delta);
+	void UpdateCrosshairSpread(float SpreadDelta);
 
 private:
 	void DrawCrosshairsTexture(UTexture2D* Texture, const FVector2D& ViewportCenter, const FVector2D& Spread);
