@@ -16,15 +16,20 @@ void AGunslingerHUD::DrawHUD()
 
 	if (CrosshairsPackage)
 	{
-		DrawCrosshairsTexture(CrosshairsPackage->CenterTexture, ViewportCenter);
-		DrawCrosshairsTexture(CrosshairsPackage->LeftTexture, ViewportCenter);
-		DrawCrosshairsTexture(CrosshairsPackage->RightTexture, ViewportCenter);
-		DrawCrosshairsTexture(CrosshairsPackage->TopTexture, ViewportCenter);
-		DrawCrosshairsTexture(CrosshairsPackage->BottomTexture, ViewportCenter);
+		DrawCrosshairsTexture(CrosshairsPackage->CenterTexture, ViewportCenter, FVector2D::ZeroVector);
+		DrawCrosshairsTexture(CrosshairsPackage->LeftTexture, ViewportCenter, {-CrosshairSpread, 0.0f});
+		DrawCrosshairsTexture(CrosshairsPackage->RightTexture, ViewportCenter, {CrosshairSpread, 0.0f});
+		DrawCrosshairsTexture(CrosshairsPackage->TopTexture, ViewportCenter, {0.0f, -CrosshairSpread});
+		DrawCrosshairsTexture(CrosshairsPackage->BottomTexture, ViewportCenter, {0.0f, CrosshairSpread});
 	}
 }
 
-void AGunslingerHUD::DrawCrosshairsTexture(UTexture2D* Texture, const FVector2D& ViewportCenter)
+void AGunslingerHUD::SetCrosshairSpreadDelta(float Delta)
+{
+	CrosshairSpread = CrosshairSpreadMax * Delta;
+}
+
+void AGunslingerHUD::DrawCrosshairsTexture(UTexture2D* Texture, const FVector2D& ViewportCenter, const FVector2D& Spread)
 {
 	if (Texture)
 	{
@@ -35,7 +40,7 @@ void AGunslingerHUD::DrawCrosshairsTexture(UTexture2D* Texture, const FVector2D&
 			TextureHeight / 2.0f
 		);
 
-		const FVector2D TextureDrawPoint = ViewportCenter - TextureCenter;
+		const FVector2D TextureDrawPoint = ViewportCenter - TextureCenter + Spread;
 
 		DrawTexture(
 			Texture,

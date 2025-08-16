@@ -62,6 +62,30 @@ void UCombatComponent::OnRep_EquippedWeapon()
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (HUD && Character)
+	{
+		const FVector2D WalkSpeedRange = { 0.0f, Character->GetMovementComponent()->GetMaxSpeed() };
+		FVector2D VelocityMultiplierRange = { 0.3f, 1.0f };
+		if (bIsAiming)
+		{
+			VelocityMultiplierRange -= FVector2D::One() * VelocityMultiplierRange.X;
+		}
+		FVector Velocity = Character->GetVelocity();
+		Velocity.Z = 0.0f;
+		const float VelocityFactor = FMath::GetMappedRangeValueClamped(WalkSpeedRange, VelocityMultiplierRange, Velocity.Size());
+
+		if (Character->GetCharacterMovement()->IsFalling())
+		{
+			CrosshairsInAirSpreadFactor = FMath::FInterpTo(CrosshairsInAirSpreadFactor, 2.25f, DeltaTime, 2.25f);
+		}
+		else
+		{
+			CrosshairsInAirSpreadFactor = FMath::FInterpTo(CrosshairsInAirSpreadFactor, 0.0f, DeltaTime, 30.f);
+		}
+
+		HUD->SetCrosshairSpreadDelta(VelocityFactor + CrosshairsInAirSpreadFactor);
+	}
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
