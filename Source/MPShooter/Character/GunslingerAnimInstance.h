@@ -20,6 +20,8 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
+	virtual void NativeBeginPlay() override;
+
 private:
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	class AGunslingerCharacter* GunslingerCharacter;
@@ -45,12 +47,20 @@ private:
 	float AOPitch;
 	UPROPERTY(BlueprintReadOnly, Category = Sockets, meta = (AllowPrivateAccess = "true"))
 	FTransform LeftHandTransform;
+	UPROPERTY(BlueprintReadOnly, Category = Sockets, meta = (AllowPrivateAccess = "true"))
+	FRotator RightHandRotation;
 	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	ETurningInPlace TurningInPlace;
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	bool bLocallyControlled = false;
+
+	UPROPERTY(EditAnywhere, Category = Debug, meta = (AllowPrivateAccess = "true"))
+	bool bDrawDebugLineToHitTarget = false;
 
 	FRotator CharacterRotationLastFrame;
 	FRotator CharacterRotation;
 	FRotator DeltaRotation;
 
 	class AWeapon* EquippedWeapon;
+
 };

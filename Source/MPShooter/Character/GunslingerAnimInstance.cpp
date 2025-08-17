@@ -69,5 +69,25 @@ void UGunslingerAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		);
 		LeftHandTransform.SetLocation(OutPosition);
 		LeftHandTransform.SetRotation(FQuat(OutRotation));
+
+		if (bLocallyControlled)
+		{
+			const FTransform RightHandTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform("Hand_R");
+			const FVector RightHandLocation = RightHandTransform.GetLocation();
+			RightHandRotation = UKismetMathLibrary::FindLookAtRotation(RightHandLocation, RightHandLocation + (RightHandLocation - GunslingerCharacter->GetHitTarget()));
+		}
+
+		if (bDrawDebugLineToHitTarget)
+		{
+			const FTransform MuzzleTipTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform("Muzzle");
+			const FVector MuzzleY(FRotationMatrix(MuzzleTipTransform.GetRotation().Rotator()).GetUnitAxis(EAxis::Y));
+			DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), MuzzleTipTransform.GetLocation() + MuzzleY * 1000.f, FColor::Red);
+			DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), GunslingerCharacter->GetHitTarget(), FColor::Green);
+		}
 	}
+}
+
+void UGunslingerAnimInstance::NativeBeginPlay()
+{
+	bLocallyControlled = GunslingerCharacter ? GunslingerCharacter->IsLocallyControlled() : false;
 }

@@ -46,6 +46,8 @@ protected:
 private:
 	void SetController(AController* NewController);
 
+	void UpdateHUDCrosshairs(float DeltaTime);
+
 private:
 	AGunslingerCharacter* Character;
 	class AGunslingerPlayerController* Controller = nullptr;
@@ -65,4 +67,6 @@ private:
 	bool bFireButtonPressed = false;
 
 	float CrosshairsInAirSpreadFactor = 0.0f;
+
+	FVector HitTarget;
 };

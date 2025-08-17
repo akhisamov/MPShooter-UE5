@@ -124,6 +124,11 @@ AWeapon* AGunslingerCharacter::GetEquippedWeapon() const
 	return Combat ? Combat->EquippedWeapon : nullptr;
 }
 
+const FVector& AGunslingerCharacter::GetHitTarget() const
+{
+	return Combat ? Combat->HitTarget : FVector::ZeroVector;
+}
+
 void AGunslingerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
