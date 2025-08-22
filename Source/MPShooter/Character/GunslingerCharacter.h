@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "MPShooter/Interfaces/InteractWithCrosshairsInterface.h"
 #include "MPShooter/Types/TurningInPlace.h"
 
 #include "GunslingerCharacter.generated.h"
@@ -14,7 +16,7 @@ class UInputAction;
 struct FInputActionValue;
 
 UCLASS()
-class MPSHOOTER_API AGunslingerCharacter : public ACharacter
+class MPSHOOTER_API AGunslingerCharacter : public ACharacter, public IInteractWithCrosshairsInterface
 {
 	GENERATED_BODY()
 

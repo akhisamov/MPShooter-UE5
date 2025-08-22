@@ -52,7 +52,7 @@ void AGunslingerHUD::DrawCrosshairsTexture(UTexture2D* Texture, const FVector2D&
 			0.0f,
 			1.0f,
 			1.0f,
-			FLinearColor::White
+			CrosshairsColor
 		);
 	}
 }

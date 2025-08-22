@@ -74,7 +74,9 @@ void UGunslingerAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		{
 			const FTransform RightHandTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform("Hand_R");
 			const FVector RightHandLocation = RightHandTransform.GetLocation();
-			RightHandRotation = UKismetMathLibrary::FindLookAtRotation(RightHandLocation, RightHandLocation + (RightHandLocation - GunslingerCharacter->GetHitTarget()));
+			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+				RightHandLocation, RightHandLocation + (RightHandLocation - GunslingerCharacter->GetHitTarget()));
+			RightHandRotation = FMath::RInterpTo(RightHandRotation, LookAtRotation, DeltaTime, 30.f);
 		}
 
 		if (bDrawDebugLineToHitTarget)

@@ -16,6 +16,7 @@ public:
 	virtual void DrawHUD() override;
 
 	FORCEINLINE void SetCrosshairsHUDPackage(const FCrosshairsHUDPackage* Package) { CrosshairsPackage = Package; }
+	FORCEINLINE void SetCrosshairsColor(const FLinearColor& Color) { CrosshairsColor = Color; }
 
 	void UpdateCrosshairSpread(float SpreadDelta);
 
@@ -29,4 +30,6 @@ private:
 	float CrosshairSpreadMax = 16.f;
 
 	float CrosshairSpread = 0.0f;
+
+	FLinearColor CrosshairsColor = FLinearColor::White;
 };

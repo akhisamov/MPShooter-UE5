@@ -178,6 +178,19 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			ECollisionChannel::ECC_Visibility
 		);
 	}
+
+	if (HUD)
+	{
+		AActor* TraceHitActor = TraceHitResult.GetActor();
+		if (TraceHitActor && TraceHitActor->Implements<UInteractWithCrosshairsInterface>())
+		{
+			HUD->SetCrosshairsColor(FLinearColor::Red);
+		}
+		else
+		{
+			HUD->SetCrosshairsColor(FLinearColor::White);
+		}
+	}
 }
 
 void UCombatComponent::SetController(AController* NewController)
