@@ -20,6 +20,7 @@
 #define SET_AIMING(bValue) bIsAiming = bValue; if (TRY_GET_CHARACTER_MOVEMENT) CharacterMovement->MaxWalkSpeed = GET_WALK_SPEED
 
 constexpr float TRACE_LENGTH = 80000.f;
+constexpr float BASE_CROSSHAIR_SPREAD_FACTOR = 0.5f;
 
 UCombatComponent::UCombatComponent()
 {
@@ -124,6 +125,11 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 		FHitResult HitResult;
 		TraceUnderCrosshairs(HitResult);
 		ServerFire(HitResult.ImpactPoint);
+
+		if (EquippedWeapon)
+		{
+			CrosshairShootingFactor = 1.f;
+		}
 	}
 }
 
@@ -185,29 +191,49 @@ void UCombatComponent::SetController(AController* NewController)
 
 void UCombatComponent::UpdateHUDCrosshairs(float DeltaTime)
 {
-	if (HUD && Character)
+	InterpCrosshairInAirSpreadFactor(DeltaTime);
+	InterpCrosshairAimSpreadFactor(DeltaTime);
+	CrosshairShootingFactor = FMath::FInterpTo(CrosshairShootingFactor, 0.f, DeltaTime, 15.f);
+
+	if (HUD)
 	{
-		const FVector2D WalkSpeedRange = { 0.0f, Character->GetMovementComponent()->GetMaxSpeed() };
-		FVector2D VelocityMultiplierRange = { 0.3f, 1.0f };
-		if (bIsAiming)
-		{
-			VelocityMultiplierRange -= FVector2D::One() * VelocityMultiplierRange.X;
-		}
+		const float VelocityFactor = GetCrosshairVelocitySpreadFactor();
+		const float CrosshairSpread =
+			BASE_CROSSHAIR_SPREAD_FACTOR +
+			VelocityFactor +
+			CrosshairInAirSpreadFactor -
+			CrosshairAimSpreadFactor +
+			CrosshairShootingFactor;
+		HUD->UpdateCrosshairSpread(CrosshairSpread);
+	}
+}
+
+float UCombatComponent::GetCrosshairVelocitySpreadFactor() const
+{
+	if (TRY_GET_CHARACTER_MOVEMENT)
+	{
+		const FVector2D WalkSpeedRange = { 0.0f, CharacterMovement->GetMaxSpeed() };
+		const FVector2D VelocityMultiplierRange = { 0.0f, 1.0f };
 		FVector Velocity = Character->GetVelocity();
 		Velocity.Z = 0.0f;
-		const float VelocityFactor = FMath::GetMappedRangeValueClamped(WalkSpeedRange, VelocityMultiplierRange, Velocity.Size());
-
-		if (Character->GetCharacterMovement()->IsFalling())
-		{
-			CrosshairsInAirSpreadFactor = FMath::FInterpTo(CrosshairsInAirSpreadFactor, 2.25f, DeltaTime, 2.25f);
-		}
-		else
-		{
-			CrosshairsInAirSpreadFactor = FMath::FInterpTo(CrosshairsInAirSpreadFactor, 0.0f, DeltaTime, 30.f);
-		}
-
-		HUD->UpdateCrosshairSpread(VelocityFactor + CrosshairsInAirSpreadFactor);
+		return FMath::GetMappedRangeValueClamped(WalkSpeedRange, VelocityMultiplierRange, Velocity.Size());
 	}
+	return 0.f;
+}
+
+void UCombatComponent::InterpCrosshairInAirSpreadFactor(float DeltaTime)
+{
+	const bool isFalling = Character && Character->GetCharacterMovement()
+		&& Character->GetCharacterMovement()->IsFalling();
+	const float Target = isFalling ? 2.25f : 0.f;
+	const float Speed = isFalling ? 2.25f : 30.f;
+	CrosshairInAirSpreadFactor = FMath::FInterpTo(CrosshairInAirSpreadFactor, Target, DeltaTime, Speed);
+}
+
+void UCombatComponent::InterpCrosshairAimSpreadFactor(float DeltaTime)
+{
+	const float Target = bIsAiming ? 0.58f : 0.f;
+	CrosshairAimSpreadFactor = FMath::FInterpTo(CrosshairAimSpreadFactor, Target, DeltaTime, 30.f);
 }
 
 void UCombatComponent::InterpFOV(float DeltaTime)

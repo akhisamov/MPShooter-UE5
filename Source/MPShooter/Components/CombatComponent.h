@@ -47,6 +47,11 @@ private:
 	void SetController(AController* NewController);
 
 	void UpdateHUDCrosshairs(float DeltaTime);
+
+	float GetCrosshairVelocitySpreadFactor() const;
+	void InterpCrosshairInAirSpreadFactor(float DeltaTime);
+	void InterpCrosshairAimSpreadFactor(float DeltaTime);
+
 	void InterpFOV(float DeltaTime);
 
 private:
@@ -67,7 +72,9 @@ private:
 
 	bool bFireButtonPressed = false;
 
-	float CrosshairsInAirSpreadFactor = 0.0f;
+	float CrosshairInAirSpreadFactor = 0.0f;
+	float CrosshairAimSpreadFactor = 0.0f;
+	float CrosshairShootingFactor = 0.0f;
 
 	FVector HitTarget;
 
