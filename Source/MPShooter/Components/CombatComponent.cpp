@@ -2,19 +2,20 @@
 
 #include "CombatComponent.h"
 
-#include "Engine/SkeletalMeshSocket.h"
+#include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
-#include "Net/UnrealNetwork.h"
+#include "DrawDebugHelpers.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "DrawDebugHelpers.h"
+#include "Net/UnrealNetwork.h"
 
 #include "MPShooter/Character/GunslingerCharacter.h"
 #include "MPShooter/HUD/GunslingerHUD.h"
 #include "MPShooter/PlayerController/GunslingerPlayerController.h"
 #include "MPShooter/Weapon/Weapon.h"
 
-#define TRY_GET_CHARACTER_MOVEMENT Character; auto* CharacterMovement = Character->GetCharacterMovement()
+#define TRY_GET_CHARACTER_MOVEMENT auto* CharacterMovement = Character ? Character->GetCharacterMovement() : nullptr
 #define GET_WALK_SPEED bIsAiming ? AimWalkSpeed : BaseWalkSpeed
 #define SET_AIMING(bValue) bIsAiming = bValue; if (TRY_GET_CHARACTER_MOVEMENT) CharacterMovement->MaxWalkSpeed = GET_WALK_SPEED
 
@@ -28,14 +29,22 @@ UCombatComponent::UCombatComponent()
 	AimWalkSpeed = 400.0f;
 }
 
-
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (TRY_GET_CHARACTER_MOVEMENT)
+	if (Character)
 	{
-		CharacterMovement->MaxWalkSpeed = BaseWalkSpeed;
+		if (auto* CharacterMovement = Character->GetCharacterMovement())
+		{
+			CharacterMovement->MaxWalkSpeed = BaseWalkSpeed;
+		}
+
+		if (auto* FollowCamera = Character->GetFollowCamera())
+		{
+			DefaultFOV = FollowCamera->FieldOfView;
+			CurrentFOV = DefaultFOV;
+		}
 	}
 }
 
@@ -63,13 +72,14 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	UpdateHUDCrosshairs(DeltaTime);
-
 	if (Character && Character->IsLocallyControlled())
 	{
 		FHitResult HitResult;
 		TraceUnderCrosshairs(HitResult);
 		HitTarget = HitResult.ImpactPoint;
+
+		UpdateHUDCrosshairs(DeltaTime);
+		InterpFOV(DeltaTime);
 	}
 }
 
@@ -197,5 +207,33 @@ void UCombatComponent::UpdateHUDCrosshairs(float DeltaTime)
 		}
 
 		HUD->UpdateCrosshairSpread(VelocityFactor + CrosshairsInAirSpreadFactor);
+	}
+}
+
+void UCombatComponent::InterpFOV(float DeltaTime)
+{
+	if (EquippedWeapon == nullptr)
+		return;
+
+	if (bIsAiming)
+	{
+		CurrentFOV = FMath::FInterpTo(
+			CurrentFOV,
+			EquippedWeapon->GetZoomedFOV(),
+			DeltaTime,
+			EquippedWeapon->GetZoomInterpSpeed());
+	}
+	else
+	{
+		CurrentFOV = FMath::FInterpTo(
+			CurrentFOV,
+			DefaultFOV,
+			DeltaTime,
+			EquippedWeapon->GetZoomInterpSpeed());
+	}
+
+	if (auto* FollowCamera = Character ? Character->GetFollowCamera() : nullptr)
+	{
+		FollowCamera->SetFieldOfView(CurrentFOV);
 	}
 }

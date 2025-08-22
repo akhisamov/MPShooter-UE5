@@ -38,6 +38,9 @@ public:
 
 	FORCEINLINE const FCrosshairsHUDPackage& GetCrosshairsHUD() const { return CrosshairsHUD; }
 
+	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
+	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -85,4 +88,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	FCrosshairsHUDPackage CrosshairsHUD;
+
+	UPROPERTY(EditAnywhere)
+	float ZoomedFOV = 30.f;
+
+	UPROPERTY(EditAnywhere)
+	float ZoomInterpSpeed = 20.f;
 };

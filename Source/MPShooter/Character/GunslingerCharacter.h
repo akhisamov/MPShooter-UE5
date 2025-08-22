@@ -9,6 +9,7 @@
 #include "GunslingerCharacter.generated.h"
 
 class AWeapon;
+class UCameraComponent;
 class UInputAction;
 struct FInputActionValue;
 
@@ -37,6 +38,8 @@ public:
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 
 	const FVector& GetHitTarget() const;
+
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 protected:
 	virtual void BeginPlay() override;

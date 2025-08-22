@@ -47,6 +47,7 @@ private:
 	void SetController(AController* NewController);
 
 	void UpdateHUDCrosshairs(float DeltaTime);
+	void InterpFOV(float DeltaTime);
 
 private:
 	AGunslingerCharacter* Character;
@@ -69,4 +70,7 @@ private:
 	float CrosshairsInAirSpreadFactor = 0.0f;
 
 	FVector HitTarget;
+
+	float DefaultFOV;
+	float CurrentFOV;
 };
