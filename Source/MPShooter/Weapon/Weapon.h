@@ -34,12 +34,17 @@ public:
 
 	void SetWeaponState(EWeaponState State);
 
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UStaticMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 
 	FORCEINLINE const FCrosshairsHUDPackage& GetCrosshairsHUD() const { return CrosshairsHUD; }
 
 	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
 	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnVisibilityChangedEvent();
+	void SetVisibility(bool Value);
 
 protected:
 	virtual void BeginPlay() override;
@@ -63,6 +68,12 @@ protected:
 	);
 
 private:
+	UFUNCTION()
+	void OnRep_WeaponState();
+
+	void UpdateWeaponState();
+
+private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	UStaticMeshComponent* WeaponMesh;
 
@@ -72,13 +83,8 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere)
 	EWeaponState WeaponState = EWeaponState::Inital;
 
-	UFUNCTION()
-	void OnRep_WeaponState();
-
 	UPROPERTY(EditAnywhere)
 	class UWidgetComponent* PickupWidget;
-
-	void UpdateWeaponState();
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	class UNiagaraSystem* FireEffectMuzzle;

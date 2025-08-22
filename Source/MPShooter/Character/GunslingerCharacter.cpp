@@ -280,10 +280,28 @@ void AGunslingerCharacter::TurnInPlace(float DeltaTime)
 	}
 }
 
+void AGunslingerCharacter::HideCameraIfCharacterClose()
+{
+	if (!IsLocallyControlled())
+		return;
+
+	const bool IsVisible =
+		(FollowCamera->GetComponentLocation() - GetActorLocation()).Size() >= CameraThreshold;
+	if (GetMesh()->IsVisible() != IsVisible)
+	{
+		GetMesh()->SetVisibility(IsVisible);
+		if (Combat && Combat->EquippedWeapon)
+		{
+			Combat->EquippedWeapon->SetVisibility(IsVisible);
+		}
+	}
+}
+
 void AGunslingerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	AimOffset(DeltaTime);
+	HideCameraIfCharacterClose();
 }
 
 void AGunslingerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

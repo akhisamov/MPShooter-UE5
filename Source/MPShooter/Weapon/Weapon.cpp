@@ -106,6 +106,15 @@ void AWeapon::SetWeaponState(EWeaponState State)
 	UpdateWeaponState();
 }
 
+void AWeapon::SetVisibility(bool Value)
+{
+	if (WeaponMesh)
+	{
+		WeaponMesh->SetVisibility(Value);
+		OnVisibilityChangedEvent();
+	}
+}
+
 void AWeapon::OnSphereBeginOverlap(
 	UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor,

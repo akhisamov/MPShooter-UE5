@@ -58,6 +58,16 @@ protected:
 	void StopFiring();
 
 private:
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
+	UFUNCTION(Server, Reliable)
+	void ServerEquipButtonPressed();
+
+	void TurnInPlace(float DeltaTime);
+
+	void HideCameraIfCharacterClose();
+
+private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class USpringArmComponent* CameraBoom;
 
@@ -69,9 +79,6 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
 	AWeapon* OverlappingWeapon;
-
-	UFUNCTION()
-	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
 
 	UPROPERTY(VisibleAnywhere)
 	class UCombatComponent* Combat;
@@ -100,8 +107,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
 
-	UFUNCTION(Server, Reliable)
-	void ServerEquipButtonPressed();
+	UPROPERTY(EditAnywhere, Category = Combat)
+	class UAnimMontage* FireWeaponMontage;
+
+	UPROPERTY(EditAnywhere, Category = Camera, meta = (AllowPrivateAccesss = "true"))
+	float CameraThreshold = 200.f;
 
 	float AOYaw;
 	float InterpAOYaw;
@@ -109,8 +119,4 @@ private:
 	FRotator StartingAimRotation;
 
 	ETurningInPlace TurningInPlace;
-	void TurnInPlace(float DeltaTime);
-
-	UPROPERTY(EditAnywhere, Category = Combat)
-	class UAnimMontage* FireWeaponMontage;
 };
