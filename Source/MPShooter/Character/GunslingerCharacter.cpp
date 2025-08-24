@@ -17,17 +17,9 @@
 #include "MPShooter/Components/CombatComponent.h"
 #include "MPShooter/Weapon/Weapon.h"
 
-static void SwitchOverlappingWeapons(AWeapon* LastWeapon, AWeapon* NewWeapon)
-{
-	if (LastWeapon)
-	{
-		LastWeapon->ShowPickupWidget(false);
-	}
-	if (NewWeapon)
-	{
-		NewWeapon->ShowPickupWidget(true);
-	}
-}
+#define SWITCH_OVERLAPPING_WEAPONS(WeaponA, WeaponB)\
+	if (WeaponA) WeaponA->ShowPickupWidget(false);\
+	if (WeaponB) WeaponB->ShowPickupWidget(true);
 
 AGunslingerCharacter::AGunslingerCharacter()
 {
@@ -106,7 +98,7 @@ void AGunslingerCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 	OverlappingWeapon = Weapon && Weapon->GetOwner() ? nullptr : Weapon;
 	if (IsLocallyControlled())
 	{
-		SwitchOverlappingWeapons(LastWeapon, OverlappingWeapon);
+		SWITCH_OVERLAPPING_WEAPONS(LastWeapon, OverlappingWeapon);
 	}
 }
 
@@ -335,7 +327,7 @@ void AGunslingerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void AGunslingerCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {
-	SwitchOverlappingWeapons(LastWeapon, OverlappingWeapon);
+	SWITCH_OVERLAPPING_WEAPONS(LastWeapon, OverlappingWeapon);
 }
 
 void AGunslingerCharacter::ServerEquipButtonPressed_Implementation()

@@ -12,7 +12,7 @@ struct FCrosshairsHUDPackage
 	UPROPERTY(EditAnywhere)
 	class UTexture2D* CenterTexture = nullptr;
 	UPROPERTY(EditAnywhere)
-	class UTexture2D* LeftTexture = nullptr;
+	UTexture2D* LeftTexture = nullptr;
 	UPROPERTY(EditAnywhere)
 	UTexture2D* RightTexture = nullptr;
 	UPROPERTY(EditAnywhere)

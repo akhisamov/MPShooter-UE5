@@ -112,7 +112,7 @@ void UCombatComponent::EquipWeapon(AWeapon* Weapon)
 
 	if (HUD)
 	{
-		HUD->SetCrosshairsHUDPackage(&EquippedWeapon->GetCrosshairsHUD());
+		HUD->SetCrosshairTextures(EquippedWeapon->GetCrosshairsHUD());
 	}
 }
 
